@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_HUB_CREDENTIALS_ID = 'capstone_id'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout the repository
+                git 'https://github.com/bharath11112001/capstone.git'
+            }
+        }
+
+        stage('Build and Deploy') {
+            steps {
+                script {
+                    // Get Docker Hub credentials
+                    withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_CREDENTIALS_ID}", passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
+                        // Run the deploy.sh script with Docker Hub credentials
+                        sh './deploy.sh ${DOCKER_HUB_USERNAME} ${DOCKER_HUB_PASSWORD}'
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean workspace after build
+            cleanWs()
+        }
+    }
+}
