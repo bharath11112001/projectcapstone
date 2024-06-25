@@ -1,14 +1,14 @@
 #!/bin/bash
-IMAGE_NAME=$1
-DOCKER_HUB_USERNAME=$2
-DOCKER_HUB_PASSWORD=$3
-BUILD_NUMBER=$4
-
-if [ -z "$IMAGE_NAME" ] || [ -z "$DOCKER_HUB_USERNAME" ] || [ -z "$DOCKER_HUB_PASSWORD" ] || [ -z "$BUILD_NUMBER" ]; then
-  echo "Usage: ./deploy.sh <image-name> <docker-hub-username> <docker-hub-password> <build-number>"
+git_branch=$(git rev-parse --abbrev-ref HEAD)
+if [[ $git_branch == "main" ]]; then
+  ./build.sh
+  docker tag mynginximg bharath883/prod:latest
+  docker push $bharath883/prod:latest
+elif [[ $git_branch == "dev" ]]; then
+  ./build.sh
+  docker tag mynginximg bharath883/dev:latest
+  docker push bharath883/dev:latest
+else
+  echo "Deployment failed: Unsupported branch '$git_branch'"
   exit 1
 fi
-
-docker tag mynginximg ${IMAGE_NAME}:${BUILD_NUMBER}
-echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USERNAME --password-stdin
-docker push ${IMAGE_NAME}:${BUILD_NUMBER}
