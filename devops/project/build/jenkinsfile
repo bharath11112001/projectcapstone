@@ -3,7 +3,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS_ID = 'docker-hub-credentials-id' // Update with your credentials ID
+        DOCKER_HUB_CREDENTIALS_ID = 'capstone_id' // Update with your credentials ID
     }
 
     stages {
@@ -24,6 +24,7 @@ pipeline {
                         // Run the deploy.sh script with Docker Hub username
                         sh """
                         export DOCKER_HUB_USERNAME=${DOCKER_HUB_USERNAME}
+                        chmod +x deploy.sh
                         ./deploy.sh
                         """
                     }
