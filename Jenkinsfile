@@ -22,6 +22,9 @@ pipeline {
                               extensions: [],
                               userRemoteConfigs: [[url: GIT_REPO_URL,
                                                    credentialsId: GIT_CREDENTIALS_ID]]])
+                    
+                    // Set the BRANCH_NAME environment variable
+                    env.BRANCH_NAME = branch
                 }
             }
         }
