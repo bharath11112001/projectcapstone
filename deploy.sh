@@ -1,5 +1,5 @@
 #!/bin/bash
-git_branch=$(git rev-parse --abbrev-ref HEAD)
+git_branch=$(git rev-parse --abbrev-ref main)
 echo "Current branch: $git_branch"
 
 if [[ $git_branch == "main" ]]; then
