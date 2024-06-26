@@ -1,16 +1,15 @@
 #!/bin/bash
-
-BRANCH_NAME=$1
-
-if [[ "$BRANCH_NAME" == "main" ]]; then
+git_branch=$(git rev-parse --abbrev-ref HEAD)
+if [[ $git_branch == "main" ]]; then
   ./build.sh
   docker tag mynginximg bharath883/prod:latest
   docker push bharath883/prod:latest
-elif [[ "$BRANCH_NAME" == "Dev" ]]; then
+elif [[ $git_branch == "dev" ]]; then
   ./build.sh
   docker tag mynginximg bharath883/dev:latest
   docker push bharath883/dev:latest
 else
-  echo "Deployment failed: Unsupported branch '$BRANCH_NAME'"
+  echo "Deployment failed: Unsupported branch '$git_branch'"
   exit 1
 fi
+
