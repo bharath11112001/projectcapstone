@@ -1,14 +1,10 @@
 #!/bin/bash
-git_branch=$(git rev-parse --abbrev-ref Dev)
-echo "Current branch: $git_branch"
-
+git_branch=$(git rev-parse --abbrev-ref HEAD)
 if [[ $git_branch == "main" ]]; then
-  echo "Building and deploying for main branch..."
   ./build.sh
   docker tag mynginximg bharath883/prod:latest
   docker push bharath883/prod:latest
 elif [[ $git_branch == "dev" ]]; then
-  echo "Building and deploying for dev branch..."
   ./build.sh
   docker tag mynginximg bharath883/dev:latest
   docker push bharath883/dev:latest
