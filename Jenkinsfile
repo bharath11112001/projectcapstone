@@ -48,7 +48,7 @@ pipeline {
                     if (env.BRANCH_NAME == 'main') {
                         echo 'Pushing to Prod repository'
                         sh '''
-                            docker tag mynginximg hanumith/prod:latest
+                            docker tag mynginximg bharath883/prod:latest
                             echo $DOCKER_HUB_CREDENTIALS_PSW | docker login -u $DOCKER_HUB_CREDENTIALS_USR --password-stdin
                             docker push mynginximg/prod:latest
                         '''
@@ -57,7 +57,7 @@ pipeline {
                         sh '''
                             docker tag  mynginximg bharath883/dev:latest
                             echo $DOCKER_HUB_CREDENTIALS_PSW | docker login -u $DOCKER_HUB_CREDENTIALS_USR --password-stdin
-                            docker push bharath883/devcapstone:latest
+                            docker push bharath883/dev:latest
                         '''
                     } else {
                         echo 'Branch is not main or Dev. Skipping Docker push.'
