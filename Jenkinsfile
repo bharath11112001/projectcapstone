@@ -15,13 +15,10 @@ pipeline {
                     def branch = env.BRANCH_NAME ?: 'Dev'
                     echo "Checking out branch: ${branch}"
                     
-                    // Checkout SCM using Git plugin
-                    checkout([$class: 'GitSCM',
-                              branches: [[name: "*/${branch}"]],
-                              doGenerateSubmoduleConfigurations: false,
-                              extensions: [],
-                              userRemoteConfigs: [[url: GIT_REPO_URL,
-                                                   credentialsId: GIT_CREDENTIALS_ID]]])
+                    // Checkout SCM using scmGit command
+                    checkout scmGit(branches: [[name: '*/main'], [name: '*/Dev']], 
+                                    extensions: [], 
+                                    userRemoteConfigs: [[credentialsId: 'git-cap', url: 'https://github.com/bharath11112001/projectcapstone.git']])
                 }
             }
         }
