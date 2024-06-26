@@ -16,9 +16,12 @@ pipeline {
                     echo "Checking out branch: ${branch}"
                     
                     // Checkout SCM using scmGit command
-                    checkout scmGit(branches: [[name: '*/main'], [name: '*/Dev']], 
-                                    extensions: [], 
-                                    userRemoteConfigs: [[credentialsId: 'git-cap', url: 'https://github.com/bharath11112001/projectcapstone.git']])
+                    checkout([$class: 'GitSCM',
+                              branches: [[name: "*/${branch}"]],
+                              doGenerateSubmoduleConfigurations: false,
+                              extensions: [],
+                              userRemoteConfigs: [[url: GIT_REPO_URL,
+                                                   credentialsId: GIT_CREDENTIALS_ID]]])
                 }
             }
         }
@@ -32,10 +35,18 @@ pipeline {
             }
         }
         
+        stage('Debug Branch Name') {
+            steps {
+                script {
+                    echo "BRANCH_NAME environment variable: ${env.BRANCH_NAME}"
+                }
+            }
+        }
+        
         stage('Push to Docker Hub') {
             when {
                 expression {
-                    // Push to Docker Hub only for Prod or Dev branches
+                    // Push to Docker Hub only for main or Dev branches
                     env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'Dev'
                 }
             }
@@ -47,12 +58,12 @@ pipeline {
                         sh '''
                             docker tag mynginximg bharath883/prod:latest
                             echo $DOCKER_HUB_CREDENTIALS_PSW | docker login -u $DOCKER_HUB_CREDENTIALS_USR --password-stdin
-                            docker push mynginximg/prod:latest
+                            docker push bharath883/prod:latest
                         '''
                     } else if (env.BRANCH_NAME == 'Dev') {
                         echo 'Pushing to Dev repository'
                         sh '''
-                            docker tag  mynginximg bharath883/dev:latest
+                            docker tag mynginximg bharath883/dev:latest
                             echo $DOCKER_HUB_CREDENTIALS_PSW | docker login -u $DOCKER_HUB_CREDENTIALS_USR --password-stdin
                             docker push bharath883/dev:latest
                         '''
@@ -66,7 +77,7 @@ pipeline {
         stage('Deploy') {
             when {
                 expression {
-                    // Deploy only if branch is 'Prod' or 'Dev'
+                    // Deploy only if branch is 'main' or 'Dev'
                     env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'Dev'
                 }
             }
