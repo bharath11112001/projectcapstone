@@ -9,6 +9,6 @@ elif [[ $git_branch == "dev" ]]; then
   docker tag mynginximg bharath883/dev:latest
   docker push bharath883/dev:latest
 else
-  echo "Deployment failed: Unsupported branch '$git_branch'"
+  echo "Deployment failed '$git_branch'"
   exit 1
 fi
