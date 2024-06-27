@@ -12,7 +12,6 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 script {
-                    // Clone the repository using the dynamically determined branch name
                     git branch: BRANCH_NAME, url: GIT_REPO_URL, credentialsId: GIT_CREDENTIALS_ID
                 }
             }
@@ -22,7 +21,7 @@ pipeline {
             steps {
                 script {
                     sh 'chmod +x build.sh'
-                    sh './build.sh'
+                    sh 'echo ${DOCKER_HUB_CREDENTIALS_PSW} | sudo -S ./build.sh'
                 }
             }
         }
@@ -30,12 +29,9 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Clean up previous deployments
                     sh 'docker-compose down'
-                    
-                    // Ensure deploy.sh is executable and run it with branch name argument
                     sh 'chmod +x deploy.sh'
-                    sh "./deploy.sh ${BRANCH_NAME}"
+                    sh "echo ${DOCKER_HUB_CREDENTIALS_PSW} | sudo -S ./deploy.sh ${BRANCH_NAME}"
                 }
             }
         }
@@ -56,3 +52,4 @@ pipeline {
         }
     }
 }
+
