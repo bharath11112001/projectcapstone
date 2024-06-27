@@ -5,6 +5,7 @@ pipeline {
         DOCKER_HUB_CREDENTIALS = credentials('capstone_id')
         GIT_REPO_URL = 'https://github.com/bharath11112001/projectcapstone.git'
         GIT_CREDENTIALS_ID = 'git-cap'
+        BRANCH_NAME = "${env.GIT_BRANCH}"
     }
     stages {
         stage('Build') {
