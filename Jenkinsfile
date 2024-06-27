@@ -1,12 +1,11 @@
 pipeline {
     agent any
-
+    
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('dockercreds')
-        GIT_REPO_URL = 'https://github.com/N-Moorthy/CapstoneProject.git'
-        GIT_CREDENTIALS_ID = 'gitcreds'
+        DOCKER_HUB_CREDENTIALS = credentials('capstone_id')
+        GIT_REPO_URL = 'https://github.com/bharath11112001/projectcapstone.git'
+        GIT_CREDENTIALS_ID = 'git-cap'
     }
-
     stages {
         stage('Build') {
             steps {
