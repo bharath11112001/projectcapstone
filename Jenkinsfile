@@ -26,18 +26,22 @@ pipeline {
             }
         }
 
+        stage('Login to Docker Registry') {
+            steps {
+                script {
+                    echo "DOCKER_USERNAME: ${env.DOCKER_USERNAME}"
+                    sh "echo 'Logging into Docker with ${env.DOCKER_USERNAME}'"
+                    sh "echo ${env.DOCKER_PASSWORD} | docker login -u ${env.DOCKER_USERNAME} --password-stdin"
+                }
+            }
+        }
+
         stage('Deploy') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'capstone_id', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh 'docker-compose down'
-                        sh 'chmod +x deploy.sh'
-                        sh """
-                            echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
-                            ./deploy.sh ${BRANCH_NAME}
-                            docker logout
-                        """
-                    }
+                    sh 'docker-compose down'
+                    sh 'chmod +x deploy.sh'
+                    sh "echo ${DOCKER_HUB_CREDENTIALS_PSW} | sudo -S ./deploy.sh ${BRANCH_NAME}"
                 }
             }
         }
