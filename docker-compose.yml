@@ -1,10 +1,6 @@
-# docker-compose.yml
-version: '3.8'
-services:
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "3000:80"
-
+Version: '3.8'
+Services:
+  <Container name >
+        Image: image name
+        Ports:
+         - '3000-80'
