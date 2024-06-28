@@ -21,7 +21,7 @@ pipeline {
             steps {
                 script {
                     sh 'chmod +x build.sh'
-                    sh 'echo ${DOCKER_HUB_CREDENTIALS_PSW} | sudo -S ./build.sh'
+                    sh './build.sh'
                 }
             }
         }
@@ -29,9 +29,15 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    sh 'docker-compose down'
-                    sh 'chmod +x deploy.sh'
-                    sh "echo ${DOCKER_HUB_CREDENTIALS_PSW} | sudo -S ./deploy.sh ${BRANCH_NAME}"
+                    withCredentials([usernamePassword(credentialsId: 'capstone_id', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh 'docker-compose down'
+                        sh 'chmod +x deploy.sh'
+                        sh """
+                            echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
+                            ./deploy.sh ${BRANCH_NAME}
+                            docker logout
+                        """
+                    }
                 }
             }
         }
@@ -52,4 +58,3 @@ pipeline {
         }
     }
 }
-
