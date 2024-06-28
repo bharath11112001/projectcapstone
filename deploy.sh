@@ -4,7 +4,6 @@ BRANCH_NAME=$1
 echo "Current Git Branch: ${BRANCH_NAME}"
 docker-compose down
 docker system prune -f && docker volume prune -f && docker network prune -f && docker image prune -f && docker container prune -f
-echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 if [[ "${BRANCH_NAME}" == "origin/Prod" ]]; then
      ./build.sh 
      docker tag mynginximg bharath883/prod:latest
